@@ -1,0 +1,15 @@
+{
+  "framework": null,
+  "buildCommand": "node src/infrastructure/buildPublic.js",
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/r/:code", "destination": "/index.html" },
+    { "source": "/r/:code/saved", "destination": "/index.html" },
+    { "source": "/d", "destination": "/index.html" },
+    { "source": "/d/", "destination": "/index.html" }
+  ],
+  "headers": [
+    { "source": "/data/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, s-maxage=600, stale-while-revalidate=3600" }] },
+    { "source": "/embed.html", "headers": [{ "key": "Content-Security-Policy", "value": "frame-ancestors *" }] }
+  ]
+}

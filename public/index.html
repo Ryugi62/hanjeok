@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>한적한 날 — 덜 붐비는 날과 곳을 5초에</title>
+<meta name="description" content="한국관광 데이터랩의 향후 30일 지역 집중률로 전국 시군구의 덜 붐비는 날과 비슷한데 덜 붐비는 여행지를 알려드려요.">
+<meta property="og:title" content="한적한 날">
+<meta property="og:description" content="가려는 곳, 언제 가면 덜 붐빌까요? 데이터랩 30일 집중률로 5초에 확인하세요.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233182F6'/%3E%3Crect x='7' y='16' width='4' height='9' rx='2' fill='white'/%3E%3Crect x='14' y='10' width='4' height='15' rx='2' fill='white' opacity='.55'/%3E%3Crect x='21' y='19' width='4' height='6' rx='2' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="wrap" id="app">
+  <header class="top">
+    <a class="brand" href="/">한적한 날</a>
+    <nav class="tabs" role="tablist" aria-label="보기 방식">
+      <button role="tab" id="tab-region" aria-selected="true" aria-controls="view-region">어디로</button>
+      <button role="tab" id="tab-date" aria-selected="false" aria-controls="view-date">언제</button>
+    </nav>
+  </header>
+
+  <section id="view-region" role="tabpanel" aria-labelledby="tab-region">
+    <h1 class="q">어디 가세요?</h1>
+    <div class="search">
+      <label for="q" class="sr">여행 갈 시군구</label>
+      <input id="q" type="search" autocomplete="off" placeholder="예: 통영, 강릉, 경주" enterkeyhint="search" aria-autocomplete="list" aria-controls="suggest">
+      <ul id="suggest" role="listbox" hidden></ul>
+    </div>
+    <p class="hint" id="hint">시군구 이름을 적으면 앞으로 30일 동안 언제 덜 붐비는지 보여드려요.</p>
+
+    <div id="result" hidden>
+      <article class="lead" aria-live="polite">
+        <p class="lead-when" id="lead-when"></p>
+        <p class="lead-num"><span id="lead-num"></span><span class="lead-unit">집중률</span></p>
+        <p class="lead-verdict" id="lead-verdict"></p>
+      </article>
+
+      <section class="block">
+        <div class="block-head">
+          <h2>앞으로 30일</h2>
+          <p class="legend"><i class="dot quiet"></i>여유 <i class="dot normal"></i>보통 <i class="dot busy"></i>붐빔</p>
+        </div>
+        <div class="tide" id="tide" role="listbox" aria-label="날짜별 집중률 — 막대를 눌러 날짜를 고르세요"></div>
+        <div class="tide-axis" id="tide-axis" aria-hidden="true"></div>
+        <p class="sub" id="best30"></p>
+      </section>
+
+      <section class="block" id="alt-block">
+        <h2 id="alt-title">같은 날, 비슷한 여행지</h2>
+        <p class="sub">데이터랩이 내비게이션 검색 패턴으로 찾은 유사지역이에요.</p>
+        <ul class="rows" id="alts"></ul>
+      </section>
+
+      <section class="block" id="near-block">
+        <h2 id="near-title">가까운 곳 중 더 한적한 곳</h2>
+        <p class="sub">대표점 30km 안의 시군구 중 같은 날 집중률이 더 낮은 곳이에요. 유사지역은 붐비는 날 함께 붐비는 경우가 많아 같이 보여드려요.</p>
+        <ul class="rows" id="nears"></ul>
+      </section>
+
+      <section class="block" id="spot-block">
+        <h2>여기서 많이 찾는 곳</h2>
+        <p class="sub" id="spot-sub"></p>
+        <ol class="rows" id="spots"></ol>
+      </section>
+
+      <details class="why">
+        <summary>이 숫자는 어떻게 나왔나요?</summary>
+        <div class="why-body">
+          <p>집중률은 한국관광 데이터랩 「지역별 관광 현황 › 지역 집중률」의 <b>향후 30일간 지역 집중률</b>이에요. 데이터랩 설명: 과거 방문자 수(이동통신 데이터)를 바탕으로 인공지능 기계학습으로 30일간 방문자 수를 예측하고, 전년도 전체 지역 평균과 표준편차를 쓴 누적분포확률로 0~100 지수화한 값이에요.</p>
+          <p>그래서 서로 다른 지역도 같은 잣대로 비교할 수 있어요. 한적한 날은 40 미만을 여유, 70 이상을 붐빔으로 나눠 보여줘요(한적한 날의 기준).</p>
+          <p>강수확률은 기상청 단기예보의 날짜별 최고값이에요. 예측이라 실제와 다를 수 있어요.</p>
+          <p class="meta" id="meta"></p>
+        </div>
+      </details>
+
+      <details class="why">
+        <summary>우리 누리집에 붙이기</summary>
+        <div class="why-body">
+          <p>지자체·관광지 누리집에 아래 한 줄을 붙이면 이 지역의 7일 혼잡 예보가 매일 갱신돼 보여요.</p>
+          <pre class="code" id="embed-code"></pre>
+          <button class="ghost" id="copy-embed" type="button">코드 복사하기</button>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section id="view-date" role="tabpanel" aria-labelledby="tab-date" hidden>
+    <h1 class="q">언제 가세요?</h1>
+    <div class="chips" id="date-chips" role="radiogroup" aria-label="날짜"></div>
+    <label class="select">
+      <span class="sr">지역 범위</span>
+      <select id="sido"></select>
+    </label>
+    <p class="sub" id="rank-sub"></p>
+    <ol class="rows rank" id="rank"></ol>
+  </section>
+
+  <footer class="foot">
+    <p>자료: 한국관광 데이터랩(한국관광공사), 기상청 단기예보(공공데이터포털), 행정경계 통계청 SGIS(vuski/admdongkor, CC BY 4.0)</p>
+    <p id="foot-meta"></p>
+  </footer>
+</main>
+
+<div class="cta" id="cta" hidden>
+  <button id="cta-btn" type="button">이 날로 정하기</button>
+</div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

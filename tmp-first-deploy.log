@@ -1,0 +1,42 @@
+
+> hanjeok@0.1.0 test
+> node --test tests/*.test.js
+
+✔ AC-11 데이터랩 forecast — 응답 list → DayIndex[], qid·SGG_CD 전송 (0.909917ms)
+✔ AC-11b 데이터랩 — HTTP 오류는 재시도 후 예외, list 없음도 예외 (0.4155ms)
+✔ AC-11c 데이터랩 similar·top 매핑 (0.255125ms)
+✔ AC-12 기상청 baseDateTime — 발표+10분 규칙 (0.092167ms)
+✔ AC-12b 기상청 daily — resultCode≠00 예외, 정상은 날짜별 요약 (0.288625ms)
+✔ AC-10 buildSnapshot — 실패는 계수하고 계속, 빈 목록은 empty, 비공개 필드 제거, 커버리지 (7.079ms)
+✔ AC-10b buildSnapshot — 집중률 호출이 예외면 그 지역만 failures (0.189083ms)
+✔ AC-13 regionOutlook — 과거 제외·주말 창 추천·대안·관광지 5·강수 결합 (0.463833ms)
+✔ AC-4b embedStrip — 오늘부터 7일, 그중 한적한 날 (0.099541ms)
+✔ UC-5 effectReport — 지역별 주말 창 감소폭의 평균·중앙값·10pt 이상 비율 (0.402333ms)
+✔ UC-5b effectReport — 30일 안 주말 전체·유사지역 대안·단계 분포 (0.552459ms)
+✔ AC-1 levelOf 경계값과 범위 밖 예외 (0.507666ms)
+✔ AC-2 weekdayOf·addDays·daysBetween (UTC 기준, 시간대 무관) (0.15425ms)
+✔ AC-3 weekendWindows — 목요일·토요일·일요일 (0.394417ms)
+✔ AC-4 quietestDay·peakDay — 최솟값, 동률은 이른 날, 기간 밖 무시, 빈 기간 null (0.214542ms)
+✔ AC-5 expectedDrop — 주말 창 peak − quietest, 한 날만 있으면 0 (0.211291ms)
+✔ median·vsUsual — 30일 중앙값 대비 차이 (0.210167ms)
+✔ AC-6 alternativesOn — 같은 날 더 낮은 유사지역만 낮은 순, 값 없는 곳 제외 (0.169917ms)
+✔ AC-7 rankForDate — 시도 필터·오름차순·값 없는 지역 제외 (0.130125ms)
+✔ AC-8 toGrid — 기상청 LCC 격자 기준값 (0.304208ms)
+✔ AC-9 summarizeRain — 날짜별 POP 최댓값, PTY>0이면 rainy (6.285917ms)
+✔ haversineKm — 서울시청~부산시청 약 325km (0.111208ms)
+✔ nearbyAlternativesOn — 반경 안·더 한적한 곳만, 낮은 순, 최대 3 (0.161125ms)
+✔ pearson — 같이 움직이면 1, 반대면 −1, 공통 10일 미만 null (0.155708ms)
+✔ 레이어 — domain은 domain만, application은 domain만 import (Clean Architecture) (0.912333ms)
+✔ 레이어 — domain은 node:·fetch·document 같은 I/O를 모른다 (0.596833ms)
+✔ forecastStability — 같은 날짜 예측의 최초·최근 차이, 지난 날짜 제외, 스냅샷 1개면 pairs 0 (6.366875ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 53.796417
+public/domain + public/application/outlook.js 복사 완료
+http://127.0.0.1:4174
+UI_OK
