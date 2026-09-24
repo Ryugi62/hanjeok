@@ -4,3 +4,6 @@ data/collect-*.log
 tmp/
 .DS_Store
 tmp-dev.log
+.vercel
+.env*
+tmp-*.log
