@@ -1,7 +1,9 @@
 {
- "snapshots": 1,
- "pairs": 0,
- "meanAbs": null,
- "medianAbs": null,
- "shareWithin10": null
+ "snapshots": 2,
+ "from": "20260924",
+ "to": "20260925",
+ "pairs": 6525,
+ "meanAbs": 0,
+ "medianAbs": 0,
+ "shareWithin10": 1
 }
