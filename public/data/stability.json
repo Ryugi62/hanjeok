@@ -1,8 +1,8 @@
 {
- "snapshots": 4,
+ "snapshots": 5,
  "from": "20260924",
- "to": "20260927",
- "pairs": 6525,
+ "to": "20260928",
+ "pairs": 7200,
  "meanAbs": 0,
  "medianAbs": 0,
  "shareWithin10": 1
