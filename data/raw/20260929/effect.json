@@ -1,0 +1,59 @@
+{
+ "today": "20260929",
+ "baseDate": "20260927",
+ "regions": 225,
+ "windows": [
+  {
+   "name": "이번 주말",
+   "from": "20261003",
+   "to": "20261004",
+   "n": 225,
+   "mean": 12.29,
+   "median": 7.14,
+   "shareAtLeast10": 0.42,
+   "max": 89.84
+  },
+  {
+   "name": "다음 주말",
+   "from": "20261010",
+   "to": "20261011",
+   "n": 225,
+   "mean": 19.86,
+   "median": 13.82,
+   "shareAtLeast10": 0.59,
+   "max": 68.33
+  }
+ ],
+ "allWeekends": {
+  "n": 900,
+  "mean": 17.57,
+  "median": 11.55,
+  "shareAtLeast10": 0.54
+ },
+ "alternatives": {
+  "busyDays": 1471,
+  "withQuieterSimilar": 929,
+  "share": 0.63,
+  "meanBestDrop": 30.96,
+  "nearbyKm": 30,
+  "withQuieterNearby": 1197,
+  "shareNearby": 0.81,
+  "withEither": 1331,
+  "shareEither": 0.9
+ },
+ "correlation": {
+  "similarPairs": 571,
+  "similarMean": 0.78,
+  "allPairs": 25200,
+  "allMean": 0.68
+ },
+ "distribution": {
+  "n": 6300,
+  "quiet": 3225,
+  "normal": 1604,
+  "busy": 1471,
+  "shareQuiet": 0.51,
+  "shareBusy": 0.23
+ },
+ "regionsWithQuietDay": 221
+}
