@@ -1,5 +1,5 @@
 // UI 어댑터 — 스냅샷 1개를 받아 유스케이스(regionOutlook·rankForDate)를 화면에 옮긴다.
-import { regionOutlook } from './application/outlook.js';
+import { regionOutlook, isPreparing, PREPARING_NOTE } from './application/outlook.js';
 import { rankForDate, alternativesOn, nearbyAlternativesOn, NEARBY_KM } from './domain/compare.js';
 import { formatKo, weekdayOf, addDays, WEEKDAY_KO } from './domain/calendar.js';
 import { levelOf } from './domain/crowd.js';
@@ -38,6 +38,16 @@ async function load() {
   const res = await fetch('/data/snapshot.json', { cache: 'no-cache' });
   if (!res.ok) throw new Error(`스냅샷을 불러오지 못했어요 (${res.status})`);
   snap = await res.json();
+  if (isPreparing(snap)) {
+    // 숫자 없이 중립 상태만 — 직접 받은 공식 다운로드 파일로 교체될 때까지.
+    $('hint').textContent = PREPARING_NOTE;
+    $('q').disabled = true;
+    $('q').placeholder = '데이터 준비 중';
+    $('tab-date').disabled = true;
+    $('foot-meta').textContent = '데이터 준비 중 · 자료: 한국관광 데이터랩 공식 「데이터 다운로드」(직접 받은 파일로 교체 중)';
+    snap = null;
+    return;
+  }
   // 스냅샷이 오늘보다 앞선 날짜로 시작하면(갱신 전 새벽) 기준일부터 보여준다.
   const first = snap.meta.baseDate;
   if (first && first > today) today = first;

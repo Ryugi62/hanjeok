@@ -1,5 +1,5 @@
 // 임베드 위젯 — 지자체 누리집 iframe용 7일 띠(UC-4).
-import { embedStrip } from './application/outlook.js';
+import { embedStrip, isPreparing } from './application/outlook.js';
 import { formatKo, WEEKDAY_KO, weekdayOf } from './domain/calendar.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -10,6 +10,7 @@ const code = (location.search.match(/[?&]sgg=(\d{5})/) || [])[1];
 const w = document.getElementById('w');
 
 fetch('/data/snapshot.json', { cache: 'no-cache' }).then((r) => r.json()).then((snap) => {
+  if (isPreparing(snap)) { w.innerHTML = '<p class="s">데이터 준비 중이에요. 한국관광 데이터랩 공식 다운로드 파일로 교체하고 있어요.</p>'; return; }
   if (snap.meta.baseDate > today) today = snap.meta.baseDate;
   const e = code && embedStrip(snap, code, today);
   if (!e || !e.days.length) { w.innerHTML = '<p class="s">이 지역의 집중률 자료가 없어요.</p>'; return; }

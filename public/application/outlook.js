@@ -52,3 +52,31 @@ export function embedStrip(snapshot, code, today) {
   const days = r.days.filter((d) => d.date >= today && d.date <= end).map((d) => ({ ...d, level: levelOf(d.index) }));
   return { region: { code: r.code, name: r.name, sido: r.sido }, days, best: quietestDay(days, today, end) };
 }
+
+// 「데이터 준비 중」 — 주최 안내(2026-09-29 15:52)에 따라 자동 실행으로 받은 파일을 내리고,
+// 사람이 직접 받은 공식 다운로드 파일로 교체될 때까지 숫자 없이 보여 준다.
+export const PREPARING_NOTE = '데이터 준비 중 — 한국관광 데이터랩 공식 「데이터 다운로드」로 직접 받은 파일로 교체하고 있어요.';
+
+export function preparingSnapshot(since) {
+  return {
+    meta: {
+      service: 'hanjeok',
+      status: 'preparing',
+      since,
+      note: PREPARING_NOTE,
+      baseDate: null,
+      coverage: { withIndex: 0, listed: 0 },
+      empty: [],
+      emptyRegions: [],
+      failures: [],
+      sources: ['한국관광 데이터랩 공식 「데이터 다운로드」(직접 받은 파일로 교체 중)', '기상청 단기예보 조회서비스(공공데이터포털)'],
+    },
+    regions: {},
+  };
+}
+
+export function isPreparing(snapshot) {
+  if (!snapshot || !snapshot.meta) return true;
+  if (snapshot.meta.status === 'preparing') return true;
+  return !snapshot.regions || Object.keys(snapshot.regions).length === 0;
+}
