@@ -127,3 +127,15 @@ test('UC-5b effectReport — 30일 안 주말 전체·유사지역 대안·단�
   assert.equal(r.correlation.similarPairs, 0); // 공통 날짜 10일 미만
   assert.equal(r.alternatives.nearbyKm, 30);
 });
+
+test('AC-10c buildSnapshot — 공식 다운로드처럼 유사도·검색건수가 없으면 null/생략(0으로 만들지 않음), sources·extraMeta 반영', async () => {
+  const ports = fakePorts();
+  ports.similar.similar = async () => [{ code: '47170', name: '경상북도 안동시', similarity: null }, { code: null, name: '외계지', similarity: null }];
+  ports.attractions.top = async () => [{ rank: 1, name: '통영중앙전통시장', category: '시장' }];
+  const snap = await buildSnapshot(ports, { today: '20260924', collectedAt: 'x', sources: ['공식 다운로드'], extraMeta: { period: { from: '202509', to: '202608' } } });
+  assert.deepEqual(snap.regions['48220'].similar, [{ code: '47170', name: '경상북도 안동시', similarity: null }, { code: null, name: '외계지', similarity: null }]);
+  assert.deepEqual(snap.regions['48220'].attractions, [{ rank: 1, name: '통영중앙전통시장', category: '시장' }]);
+  assert.deepEqual(snap.meta.sources, ['공식 다운로드']);
+  assert.deepEqual(snap.meta.period, { from: '202509', to: '202608' });
+  assert.equal(snap.meta.attractionsYm, null);
+});

@@ -23,6 +23,13 @@ function kstToday() {
   return `${t.getUTCFullYear()}${p(t.getUTCMonth() + 1)}${p(t.getUTCDate())}`;
 }
 
+// 유사지역·인기관광지 분석 기간(공식 다운로드 파일명 기준).
+const periodKo = () => {
+  const p = snap && snap.meta.period;
+  if (!p) return '최근 12개월';
+  return `${p.from.slice(0, 4)}년 ${+p.from.slice(4)}월~${p.to.slice(0, 4)}년 ${+p.to.slice(4)}월`;
+};
+
 let snap = null;
 let today = kstToday();
 let current = null; // { code, outlook, selected }
@@ -35,7 +42,8 @@ async function load() {
   const first = snap.meta.baseDate;
   if (first && first > today) today = first;
   const regions = Object.values(snap.regions);
-  $('foot-meta').textContent = `데이터 기준일 ${formatKo(snap.meta.baseDate)} · 지역 ${regions.length}곳 · 수집 ${snap.meta.collectedAt.slice(0, 16).replace('T', ' ')}`;
+  const dl = snap.meta.download;
+  $('foot-meta').textContent = `데이터 기준일 ${formatKo(snap.meta.baseDate)} · 지역 ${regions.length}곳 · 데이터랩 공식 다운로드${dl ? ` 파일 ${dl.files}개` : ''}${snap.meta.collectedAt ? ` (${snap.meta.collectedAt.slice(0, 10)})` : ''}`;
   initSearch(regions);
   initDateView(regions);
   route();
@@ -110,7 +118,7 @@ function showRegion(code, push) {
   const b = o.best30;
   $('best30').textContent = b ? `30일 중 가장 한적한 날은 ${formatKo(b.date)}, 집중률 ${fmt(b.index)}(${levelOf(b.index).label})이에요.` : '';
   renderSpots(o);
-  $('meta').textContent = `데이터 기준일 ${formatKo(snap.meta.baseDate)}. 인기관광지는 ${snap.meta.attractionsYm ? `${snap.meta.attractionsYm.slice(0, 4)}년 ${+snap.meta.attractionsYm.slice(4)}월` : '최근'} 내비게이션 검색건수예요.`;
+  $('meta').textContent = `데이터 기준일 ${formatKo(snap.meta.baseDate)}. 인기관광지·유사지역은 ${periodKo()} 데이터랩 분석이에요.`;
   const url = `${location.origin}/embed.html?sgg=${code}`;
   $('embed-code').textContent = `<iframe src="${url}" title="${label(r)} 7일 혼잡 예보" width="100%" height="180" style="border:0" loading="lazy"></iframe>`;
   $('cta').hidden = false;
@@ -184,7 +192,7 @@ function renderAlts(code, date, baseIndex) {
     if (!s.region || s.index === null) return `<li><span class="name">${esc(s.name)}<small>집중률 자료 없음</small></span></li>`;
     const diff = s.index - baseIndex;
     const note = lower.has(s.code) ? `<small class="lv-quiet">${fmt(-diff)} 더 한적</small>` : `<small>${diff === 0 ? '같음' : `${fmt(diff)} 더 붐빔`}</small>`;
-    return `<li><a class="name" href="/r/${s.code}" data-code="${s.code}">${esc(label(s.region))}<small>유사도 ${(s.similarity * 100).toFixed(0)}%</small></a><span class="val"><b class="${lvClass(s.index)}">${fmt(s.index)}</b>${note}</span></li>`;
+    return `<li><a class="name" href="/r/${s.code}" data-code="${s.code}">${esc(label(s.region))}<small>데이터랩 유사지역</small></a><span class="val"><b class="${lvClass(s.index)}">${fmt(s.index)}</b>${note}</span></li>`;
   }).join('') : '<li>데이터랩 유사지역 자료가 없어요.</li>';
   const near = nearbyAlternativesOn(snap, code, date);
   $('near-title').textContent = `${formatKo(date)}, ${NEARBY_KM}km 안에서 더 한적한 곳`;
@@ -207,8 +215,8 @@ function renderAlts(code, date, baseIndex) {
 
 function renderSpots(o) {
   $('spot-block').hidden = !o.attractions.length;
-  $('spot-sub').textContent = '데이터랩 인기관광지(내비게이션 목적지 검색건수) 순위예요. 붐비는 날엔 이런 곳부터 붐벼요.';
-  $('spots').innerHTML = o.attractions.map((a) => `<li><span class="name">${esc(a.name)}<small>${esc(a.category)}</small></span><span class="val"><small>검색 ${a.searchCount.toLocaleString('ko-KR')}건</small></span></li>`).join('');
+  $('spot-sub').textContent = `데이터랩 인기관광지 순위(${periodKo()})예요. 붐비는 날엔 이런 곳부터 붐벼요.`;
+  $('spots').innerHTML = o.attractions.map((a) => `<li><span class="name">${esc(a.name)}<small>${esc(a.category)}</small></span><span class="val"><small>${a.rank}위</small></span></li>`).join('');
 }
 
 function downloadIcs(code, date, index) {

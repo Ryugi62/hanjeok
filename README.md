@@ -8,21 +8,26 @@
 - 임베드 `/embed.html?sgg=<코드>` — 지자체·관광지 누리집용 7일 혼잡 예보
 
 ## 데이터
+모든 데이터랩 값은 **한국관광 데이터랩 공식 「데이터 다운로드」 파일**(회원 로그인 후 각 시군구 화면의 다운로드 버튼)에서만 읽습니다.
+데이터랩 고지 「공식 제공되는 다운로드 이외의 방법에 의한 무단 수집이 금지」에 따라 화면 조회값을 자동으로 수집하지 않습니다.
+
 | 원천 | 쓰는 값 |
 |---|---|
-| 한국관광 데이터랩 — 지역별 관광 현황 › 지역 집중률 | 향후 30일간 지역 집중률(0~100, 전년도 전체 지역 평균·표준편차 기반 누적분포확률 지수) |
-| 한국관광 데이터랩 — AI 관광 분석 › 유사지역 | 내비게이션 검색 유형 유사도 상위 3 지역 |
-| 한국관광 데이터랩 — 인기관광지 현황 | 내비게이션 목적지 검색건수 순위(월) |
-| 기상청 단기예보 조회서비스 | 날짜별 강수확률 최고값·강수 여부 |
+| 데이터랩 공식 다운로드 — 향후 30일간 지역 집중률 | 일별 지수 0~100(전년도 전체 지역 평균·표준편차 기반 누적분포확률) |
+| 데이터랩 공식 다운로드 — AI 관광 분석(유사지역) | 유사지역 이름(점수 없음) → 지역 코드 대조 |
+| 데이터랩 공식 다운로드 — 인기관광지(전체) | 순위·관광지명·분류(검색건수 없음) |
+| 기상청 단기예보 조회서비스(공공데이터포털 오픈API) | 날짜별 강수확률 최고값·강수 여부 |
 | 통계청 SGIS 행정경계(vuski/admdongkor, CC BY 4.0) | 시군구 대표점 → 기상청 격자 |
 
-데이터랩 화면에서 표시하지 않는 값(예측 방문자 수 등)은 수집하지 않습니다.
+다운로드 파일에 없는 값(예측 방문자 수·유사도 점수·검색건수)은 쓰지 않습니다.
 
 ## 개발
 ```
-npm test                      # 도메인·유스케이스·어댑터·레이어 테스트
-npm run collect               # 스냅샷 수집(KMA_SERVICE_KEY 없으면 날씨 제외)
-npm run build                 # src/domain → public/domain 복사
-node tools/dev-server.js      # http://127.0.0.1:4173 (vercel.json rewrites 흉내)
+npm test                                  # 도메인·유스케이스·어댑터·레이어 테스트
+npm run from-downloads <다운로드 폴더>      # 공식 다운로드 zip → public/data/snapshot.json·effect.json
+npm run weather                           # 기상청 강수확률만 갱신(KMA_SERVICE_KEY)
+npm run build                             # src/domain → public/domain 복사
+node tools/dev-server.js                  # http://127.0.0.1:4173 (vercel.json rewrites 흉내)
 ```
+다운로드 폴더: `<코드>_1282.zip`(집중률) · `<코드>_1205.zip`(AI 관광 분석) · `<코드>_1211.zip`(인기관광지) · `regions.json` · `manifest.json`.
 구조: `src/domain ← src/application ← src/adapters ← src/infrastructure` (SPEC.md §7).

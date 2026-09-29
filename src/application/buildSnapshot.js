@@ -2,10 +2,25 @@
 import { toGrid } from '../domain/weather.js';
 
 const pickDay = (x) => ({ date: String(x.date), index: Number(x.index) });
-const pickSimilar = (x) => ({ code: String(x.code), name: String(x.name), similarity: Math.round(Number(x.similarity) * 1000) / 1000 });
+// 공식 다운로드 파일엔 유사도 점수가 없다 — 없는 값은 null로 둔다(0으로 만들지 않는다). 이름 대조 실패 코드도 null.
+const pickSimilar = (x) => ({
+  code: x.code == null ? null : String(x.code),
+  name: String(x.name),
+  similarity: x.similarity == null || !Number.isFinite(Number(x.similarity)) ? null : Math.round(Number(x.similarity) * 1000) / 1000,
+});
 // 내비게이션 목적지 순위에는 터미널 같은 교통시설이 섞인다 — 가볼 곳 5개만 남긴다.
 export const NON_SPOT = new Set(['교통시설']);
-const pickAttraction = (x) => ({ rank: Number(x.rank), name: String(x.name), category: String(x.category || ''), searchCount: Number(x.searchCount) });
+const pickAttraction = (x) => {
+  const a = { rank: Number(x.rank), name: String(x.name), category: String(x.category || '') };
+  if (x.searchCount != null && Number.isFinite(Number(x.searchCount))) a.searchCount = Number(x.searchCount);
+  return a;
+};
+
+export const DEFAULT_SOURCES = [
+  '한국관광 데이터랩 공식 데이터 다운로드(회원 로그인) — 향후 30일간 지역 집중률 · AI 관광 분석(유사지역) · 인기관광지',
+  '통계청 SGIS 행정경계(vuski/admdongkor 가공본, CC BY 4.0) — 시군구 대표점',
+  '기상청 단기예보 조회서비스(공공데이터포털 15084084)',
+];
 
 async function mapLimit(items, limit, fn) {
   const out = new Array(items.length);
@@ -21,7 +36,7 @@ async function mapLimit(items, limit, fn) {
 }
 
 export async function buildSnapshot(ports, opts) {
-  const { today, attractionsYm, collectedAt, concurrency = 3, onProgress } = opts;
+  const { today, attractionsYm, collectedAt, concurrency = 3, onProgress, sources, extraMeta } = opts;
   const list = await ports.regions.list();
   const failures = [];
   const empty = [];
@@ -74,13 +89,8 @@ export async function buildSnapshot(ports, opts) {
       empty: empty.map((e) => e.code).sort(),
       emptyRegions: empty.sort((a, b) => a.code.localeCompare(b.code)),
       failures: failures.sort((a, b) => a.code.localeCompare(b.code) || a.part.localeCompare(b.part)),
-      sources: [
-        '한국관광 데이터랩 — 지역별 관광 현황 > 지역 집중률(향후 30일간 지역 집중률)',
-        '한국관광 데이터랩 — AI 관광 분석 > 유사지역(내비게이션 검색 유형 유사도)',
-        '한국관광 데이터랩 — 인기관광지 현황(내비게이션 검색건수)',
-        '한국관광 데이터랩 — 중심관광지(대표 좌표)',
-        '기상청 단기예보 조회서비스(공공데이터포털 15084084)',
-      ],
+      sources: sources || DEFAULT_SOURCES,
+      ...(extraMeta || {}),
     },
     regions,
   };

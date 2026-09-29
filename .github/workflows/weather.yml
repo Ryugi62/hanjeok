@@ -1,4 +1,6 @@
-name: daily-collect
+name: weather-refresh
+# 기상청 단기예보(공공데이터포털 오픈API) 강수확률만 매일 갱신한다.
+# 데이터랩 값은 공식 「데이터 다운로드」 파일로만 교체한다(자동 수집 없음 — SPEC §2).
 on:
   schedule:
     - cron: '30 21 * * *' # 06:30 KST
@@ -6,23 +8,22 @@ on:
 permissions:
   contents: write
 jobs:
-  collect:
+  weather:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: npm test
-      - run: node src/infrastructure/collect.js
+      - run: node src/infrastructure/refreshWeather.js
         env:
           KMA_SERVICE_KEY: ${{ secrets.KMA_SERVICE_KEY }}
-      - run: node src/infrastructure/stability.js
       - name: commit snapshot
         run: |
           git config user.name "hanjeok-bot"
           git config user.email "hanjeok-bot@users.noreply.github.com"
-          git add public/data data/raw
-          git diff --cached --quiet || git commit -m "data: 데이터랩 집중률 스냅샷 $(date -u -d '+9 hour' +%Y-%m-%d)"
+          git add public/data/snapshot.json
+          git diff --cached --quiet || git commit -m "data: 기상청 강수확률 갱신 $(date -u -d '+9 hour' +%Y-%m-%d)"
           git push
