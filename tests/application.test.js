@@ -119,6 +119,10 @@ test('UC-5b effectReport — 30일 안 주말 전체·유사지역 대안·단�
   // 붐빔(≥70) 지역-일: 통영 9/24·9/25·9/26·10/3, 안동 10/3·10/4 = 6. 10 이상 한적한 유사지역이 있는 것: 통영 9/26(안동 50) = 1 (9/24·25·10/3은 안동 값 없음 또는 더 붐빔)
   assert.equal(r.alternatives.busyDays, 6);
   assert.equal(r.alternatives.withQuieterSimilar, 1);
+  // 유사지역 자료가 있는 지역(통영)만 분모 — 공식 다운로드에 유사지역 파일이 없는 지역(안동: similar [])은 제외
+  assert.equal(r.alternatives.regionsWithSimilar, 1);
+  assert.equal(r.alternatives.busyDaysWithSimilar, 4);
+  assert.equal(r.alternatives.share, 0.25);
   assert.equal(r.distribution.n, 11);
   assert.equal(r.distribution.quiet + r.distribution.normal + r.distribution.busy, 11);
   // 대표점이 없으면 이웃 대안 0 → either = similar

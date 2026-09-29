@@ -193,7 +193,7 @@ function renderAlts(code, date, baseIndex) {
     const diff = s.index - baseIndex;
     const note = lower.has(s.code) ? `<small class="lv-quiet">${fmt(-diff)} 더 한적</small>` : `<small>${diff === 0 ? '같음' : `${fmt(diff)} 더 붐빔`}</small>`;
     return `<li><a class="name" href="/r/${s.code}" data-code="${s.code}">${esc(label(s.region))}<small>데이터랩 유사지역</small></a><span class="val"><b class="${lvClass(s.index)}">${fmt(s.index)}</b>${note}</span></li>`;
-  }).join('') : '<li>데이터랩 유사지역 자료가 없어요.</li>';
+  }).join('') : '<li><span class="name">유사지역 자료 없음<small>이번 공식 다운로드 파일에 이 지역 유사지역이 없어요</small></span></li>';
   const near = nearbyAlternativesOn(snap, code, date);
   $('near-title').textContent = `${formatKo(date)}, ${NEARBY_KM}km 안에서 더 한적한 곳`;
   $('nears').innerHTML = near.length

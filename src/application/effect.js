@@ -68,6 +68,7 @@ export function effectReport(snapshot, today) {
 
   // 붐빔(≥70) 지역-일 중 같은 날 10 이상 한적한 유사지역이 있는 비율
   let busyDays = 0;
+  let busyDaysWithSimilar = 0;
   let withQuieterSimilar = 0;
   let withQuieterNearby = 0;
   let withEither = 0;
@@ -78,6 +79,7 @@ export function effectReport(snapshot, today) {
       dist[levelOf(d.index).key] += 1;
       if (d.index < 70) continue;
       busyDays += 1;
+      if ((r.similar || []).length) busyDaysWithSimilar += 1;
       const alts = alternativesOn(snapshot, r.code, d.date).filter((a) => a.drop >= 10);
       const near = nearbyAlternativesOn(snapshot, r.code, d.date, NEARBY_KM, 1000).filter((a) => a.drop >= 10);
       if (alts.length) {
@@ -98,7 +100,10 @@ export function effectReport(snapshot, today) {
     alternatives: {
       busyDays,
       withQuieterSimilar,
-      share: busyDays ? round2(withQuieterSimilar / busyDays) : null,
+      // 유사지역 대안률의 분모 = 유사지역 자료가 있는 지역의 붐빔 일(공식 다운로드에 유사지역 파일이 없는 지역은 제외)
+      regionsWithSimilar: regions.filter((r) => (r.similar || []).length).length,
+      busyDaysWithSimilar,
+      share: busyDaysWithSimilar ? round2(withQuieterSimilar / busyDaysWithSimilar) : null,
       meanBestDrop: stat(bestDrops).mean,
       nearbyKm: NEARBY_KM,
       withQuieterNearby,
