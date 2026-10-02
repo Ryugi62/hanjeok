@@ -118,6 +118,8 @@ function showRegion(code, push) {
   document.title = `${label(r)} — 한적한 날`;
   $('q').value = label(r);
   $('hint').hidden = true;
+  const pre = $('prerender'); // 빌드 때 심은 색인용 정적 요약 — 화면이 그려지면 지운다(중복 표시 0).
+  if (pre) pre.remove();
   $('result').hidden = false;
   // 첫 추천: 이번 주말 중 한적한 날(없으면 30일 최저)
   const w = o.windows[0];
