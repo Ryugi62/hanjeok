@@ -18,3 +18,8 @@
 
 ## 비목표
 데이터 재적재(공식 다운로드 파일을 사람이 직접 받는 일 — 이 레포 밖) · 커스텀 도메인 · 서치콘솔 등록 · `/d/` 날짜 보기 사전 렌더.
+
+## 추가 · 검색엔진 소유확인 (2026-10-02 18:xx)
+- 목적: 구글 서치 콘솔·네이버 서치어드바이저 URL 접두어 속성 등록 + sitemap 제출.
+- AC-6: Given `public/index.html`, Then `<head>` 안에 `<meta name="google-site-verification">`(구글 HTML 태그 토큰)·`<meta name="naver-site-verification">`(네이버 토큰)이 각 1개.
+- 성공 조건: 라이브 홈 HTML에 두 메타 1개씩 · 서치 콘솔 「확인」 성공 · 네이버 「소유확인」 성공.

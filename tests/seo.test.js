@@ -73,3 +73,12 @@ test('AC-5 배포본 — sitemap·robots·홈 canonical·분석·prerender 제�
   assert.ok(app.includes("'/_vercel/insights/script.js'"));
   assert.match(app, /prerender/);
 });
+
+test('AC-6 home head carries Google + Naver site verification once each', () => {
+  const html = readFileSync(new URL('../public/index.html', import.meta.url), 'utf8');
+  const head = html.slice(0, html.indexOf('</head>'));
+  const g = head.match(/<meta name="google-site-verification" content="([^"]+)">/g) || [];
+  const n = head.match(/<meta name="naver-site-verification" content="([^"]+)">/g) || [];
+  assert.deepEqual(g, ['<meta name="google-site-verification" content="vWRJGzCH_5XZF_hLdesHlikDxHZeJOmWcCKiOPM5_Uo">']);
+  assert.deepEqual(n, ['<meta name="naver-site-verification" content="d58a87cedf2423949e97524436d874b2d4bba3db">']);
+});
